@@ -117,6 +117,25 @@ class HotelControllerTest {
     }
 
     @Test
+    void testGetHotels_NullRequestParameters() {
+        SearchQuery query = new SearchQuery(null, null, null, null);
+
+        HotelLocation madrid = new HotelLocation("1", "Madrid");
+        HotelLocation barcelona = new HotelLocation("2", "Barcelona");
+        List<Hotel> hotels = Arrays.asList(
+                new Hotel("A", "Hotel A", "Description A", madrid, 100, null, List.of(new HotelReview("4", 4, "4"))),
+                new Hotel("B", "Hotel B", "Description B", madrid, 10000, null, List.of(new HotelReview("1", 1, "1"))),
+                new Hotel("C", "Hotel C", "Description C", madrid, 120, null, List.of(new HotelReview("5", 5, "5"))),
+                new Hotel("B", "Hotel B", "Description B", barcelona, 100, null, List.of(new HotelReview("3", 3, "3")))
+        );
+        when(hotelDatabase.getAllHotels()).thenReturn(hotels);
+
+        List<Hotel> result = hotelController.getHotels(query);
+        // All hotels are returned
+        assertEquals(List.of(hotels.get(2), hotels.get(0), hotels.get(3), hotels.get(1)), result);
+    }
+
+    @Test
     void testGetHotels_NoResults() {
         SearchQuery query = new SearchQuery(
                 "Atlantis", // Non-existing city

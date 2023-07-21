@@ -12,10 +12,12 @@ import java.util.stream.Collectors;
 public class HotelHelper {
     public List<Hotel> filterHotels(List<Hotel> hotels, SearchQuery query) {
         return hotels.stream()
-                .filter(hotel -> hotel.getLocation().getName().equalsIgnoreCase(query.getLocation()))
-                .filter(hotel -> hotel.getPrice() >= query.getPriceRange().get(0)
-                        && hotel.getPrice() <= query.getPriceRange().get(1))
-                .filter(hotel -> !this.isBooked(hotel, query.getCheckinDate(), query.getCheckoutDate()))
+                .filter(hotel -> query.getLocation() == null
+                        || hotel.getLocation().getName().equalsIgnoreCase(query.getLocation()))
+                .filter(hotel -> query.getPriceRange() == null
+                        || (hotel.getPrice() >= query.getPriceRange().get(0)
+                            && hotel.getPrice() <= query.getPriceRange().get(1)))
+                .filter(hotel -> !isBooked(hotel, query.getCheckinDate(), query.getCheckoutDate()))
                 .collect(Collectors.toList());
     }
 
